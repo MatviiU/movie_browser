@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:movie_browser/core/network/movie_api/movies_api_base.dart';
+import 'package:movie_browser/features/details/data/data_source/models/movie_details_dto.dart';
 import 'package:movie_browser/features/movies/data/data_source/models/movie_dto.dart';
 
 class MoviesApiDio implements MoviesApiBase {
@@ -30,6 +31,25 @@ class MoviesApiDio implements MoviesApiBase {
       return movies;
     } on DioException catch (e) {
       throw Exception('Failed to load movies: ${e.message}');
+    }
+  }
+
+  @override
+  Future<MovieDetailsDto> getMovieDetails(int movieId) async {
+    try {
+      final response = await dio.get<Map<String, dynamic>>(
+        '/movie/$movieId',
+        queryParameters: {'api_key': _apiKey, 'language': 'uk-UA'},
+      );
+
+      final data = response.data;
+      if (data == null) {
+        throw Exception('Results are null');
+      }
+      final movie = MovieDetailsDto.fromJson(data);
+      return movie;
+    } on DioException catch (e) {
+      throw Exception('Failed to load movie details: ${e.message}');
     }
   }
 }

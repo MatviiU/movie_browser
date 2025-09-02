@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_browser/core/di/get_it.dart';
-import 'package:movie_browser/features/movies/presentation/bloc/movies_cubit.dart';
-import 'package:movie_browser/features/movies/presentation/bloc/movies_state.dart';
-import 'package:movie_browser/features/movies/presentation/ui/widgets/movie_list.dart';
+import 'package:movie_browser/features/details/presentation/cubit/movie_details_cubit.dart';
+import 'package:movie_browser/features/details/presentation/cubit/movie_details_state.dart';
+import 'package:movie_browser/features/details/presentation/ui/widgets/movie_details_view.dart';
 
-class MovieListScreen extends StatelessWidget {
-  const MovieListScreen({super.key});
+class MovieDetailsScreen extends StatelessWidget {
+  const MovieDetailsScreen({required this.movieId, super.key});
+
+  final int movieId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<MoviesCubit>()..getMovies(),
+      create: (context) => getIt<MovieDetailsCubit>()..getMovieDetails(movieId),
       child: Scaffold(
         backgroundColor: const Color(0xFF1C1C1E),
         appBar: AppBar(
-          title: const Text('Popular movies'),
           backgroundColor: const Color(0xFFF0F0F0),
 
           iconTheme: const IconThemeData(color: Colors.black87),
@@ -28,17 +29,20 @@ class MovieListScreen extends StatelessWidget {
 
           elevation: 4,
           shadowColor: Colors.black.withValues(alpha: 0.3),
+          title: const Text('Movie details'),
         ),
-        body: BlocBuilder<MoviesCubit, MoviesState>(
+        body: BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
           builder: (context, state) {
             return switch (state) {
-              MoviesInitial() || MoviesLoading() => const Center(
+              MovieDetailsInitial() || MovieDetailsLoading() => const Center(
                 child: CircularProgressIndicator(),
               ),
-              MoviesError(message: final message) => Center(
+              MovieDetailsError(message: final message) => Center(
                 child: Text('Error: $message'),
               ),
-              MoviesLoaded(movies: final movies) => MovieList(movies: movies),
+              MovieDetailsLoaded(movie: final movie) => MovieDetailsView(
+                movie: movie,
+              ),
               _ => const Center(child: Text('Ups... something went wrong')),
             };
           },
