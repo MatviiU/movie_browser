@@ -4,14 +4,15 @@ part 'movie_dto.g.dart';
 
 @JsonSerializable()
 class MovieDto {
-  MovieDto({this.title, this.posterPath, this.overview});
+  MovieDto({this.title, this.posterPath, this.overview, this.id});
 
   factory MovieDto.fromJson(Map<String, dynamic> json) {
     return _$MovieDtoFromJson(json);
   }
 
-  String? title;
+  final int? id;
+  final String? title;
   @JsonKey(name: 'poster_path')
-  String? posterPath;
-  String? overview;
+  final String? posterPath;
+  final String? overview;
 }

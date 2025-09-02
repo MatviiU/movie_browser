@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movie_browser/core/network/movie_api/dio/movies_api_dio.dart';
 import 'package:movie_browser/core/network/movie_api/movies_api_base.dart';
+import 'package:movie_browser/features/details/data/data_source/movie_details_data_source.dart';
+import 'package:movie_browser/features/details/data/repository/movie_details_repository.dart';
+import 'package:movie_browser/features/details/presentation/cubit/movie_details_cubit.dart';
 import 'package:movie_browser/features/movies/data/data_source/movies_data_source.dart';
 import 'package:movie_browser/features/movies/data/repository/movies_repository.dart';
 import 'package:movie_browser/features/movies/presentation/bloc/movies_cubit.dart';
@@ -22,7 +25,20 @@ void setupDependencies() {
     ..registerLazySingleton<MoviesRepository>(
       () => MoviesRepository(moviesDataSource: getIt<MoviesDataSource>()),
     )
-    ..registerLazySingleton<MoviesCubit>(
+    ..registerFactory<MoviesCubit>(
       () => MoviesCubit(moviesRepository: getIt<MoviesRepository>()),
+    )
+    ..registerLazySingleton(
+      () => MovieDetailsDataSource(moviesApi: getIt<MoviesApiBase>()),
+    )
+    ..registerLazySingleton<MovieDetailsRepository>(
+      () => MovieDetailsRepository(
+        movieDetailsDataSource: getIt<MovieDetailsDataSource>(),
+      ),
+    )
+    ..registerFactory<MovieDetailsCubit>(
+      () => MovieDetailsCubit(
+        movieDetailsRepository: getIt<MovieDetailsRepository>(),
+      ),
     );
 }
