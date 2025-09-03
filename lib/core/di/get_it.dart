@@ -5,6 +5,8 @@ import 'package:movie_browser/core/network/movie_api/movies_api_base.dart';
 import 'package:movie_browser/features/details/data/data_source/movie_details_data_source.dart';
 import 'package:movie_browser/features/details/data/repository/movie_details_repository.dart';
 import 'package:movie_browser/features/details/presentation/cubit/movie_details_cubit.dart';
+import 'package:movie_browser/features/favorites/data/favorites_storage_service.dart';
+import 'package:movie_browser/features/favorites/presentation/bloc/favorites_bloc.dart';
 import 'package:movie_browser/features/movies/data/data_source/movies_data_source.dart';
 import 'package:movie_browser/features/movies/data/repository/movies_repository.dart';
 import 'package:movie_browser/features/movies/presentation/bloc/movies_cubit.dart';
@@ -23,7 +25,10 @@ void setupDependencies() {
       () => MoviesDataSource(moviesApi: getIt<MoviesApiBase>()),
     )
     ..registerLazySingleton<MoviesRepository>(
-      () => MoviesRepository(moviesDataSource: getIt<MoviesDataSource>()),
+      () => MoviesRepository(
+        moviesDataSource: getIt<MoviesDataSource>(),
+        movieDetailsRepository: getIt<MovieDetailsRepository>(),
+      ),
     )
     ..registerFactory<MoviesCubit>(
       () => MoviesCubit(moviesRepository: getIt<MoviesRepository>()),
@@ -39,6 +44,13 @@ void setupDependencies() {
     ..registerFactory<MovieDetailsCubit>(
       () => MovieDetailsCubit(
         movieDetailsRepository: getIt<MovieDetailsRepository>(),
+      ),
+    )
+    ..registerLazySingleton<FavoriteStorageService>(FavoriteStorageService.new)
+    ..registerFactory<FavoritesBloc>(
+      () => FavoritesBloc(
+        favoriteStorageService: getIt<FavoriteStorageService>(),
+        moviesRepository: getIt<MoviesRepository>(),
       ),
     );
 }

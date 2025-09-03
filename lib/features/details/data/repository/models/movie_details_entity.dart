@@ -2,6 +2,7 @@ import 'package:movie_browser/features/details/data/data_source/models/movie_det
 
 class MovieDetailsEntity {
   const MovieDetailsEntity({
+    required this.id,
     required this.title,
     required this.posterPath,
     required this.overview,
@@ -10,6 +11,7 @@ class MovieDetailsEntity {
 
   factory MovieDetailsEntity.fromDto(MovieDetailsDto dto) {
     return MovieDetailsEntity(
+      id: dto.id ?? 0,
       title: dto.title ?? '',
       posterPath: dto.posterPath ?? '',
       overview: dto.overview ?? '',
@@ -17,6 +19,7 @@ class MovieDetailsEntity {
     );
   }
 
+  final int id;
   final String title;
   final String posterPath;
   final String overview;

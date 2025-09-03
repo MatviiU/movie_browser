@@ -1,3 +1,4 @@
+import 'package:movie_browser/features/details/data/repository/models/movie_details_entity.dart';
 import 'package:movie_browser/features/movies/data/data_source/models/movie_dto.dart';
 
 class MovieEntity {
@@ -14,6 +15,15 @@ class MovieEntity {
       title: dto.title ?? '',
       posterPath: dto.posterPath ?? '',
       overview: dto.overview ?? '',
+    );
+  }
+
+  factory MovieEntity.fromDetailsEntity(MovieDetailsEntity entity) {
+    return MovieEntity(
+      id: entity.id,
+      title: entity.title,
+      posterPath: entity.posterPath,
+      overview: entity.overview,
     );
   }
 
