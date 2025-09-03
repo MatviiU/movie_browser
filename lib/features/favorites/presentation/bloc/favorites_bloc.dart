@@ -45,21 +45,29 @@ class FavoritesBloc extends Bloc<FavoriteEvent, FavoritesState> {
     AddFavorite event,
     Emitter<FavoritesState> emit,
   ) async {
-    final currentFavorites = await _favoriteStorageService.getFavorites();
-    final newFavorites = [...currentFavorites, event.movieId];
-    await _favoriteStorageService.saveFavorites(newFavorites);
-    add(LoadFavorites());
+    if (state is FavoritesLoaded) {
+      final oldState = state as FavoritesLoaded;
+      final newFavorites = [...oldState.favoriteMovieIds, event.movieId];
+      await _favoriteStorageService.saveFavorites(newFavorites);
+      final newMovies = await _moviesRepository.getMoviesByIds(newFavorites);
+      emit(FavoritesLoaded(movies: newMovies, favoriteMovieIds: newFavorites));
+    }
   }
 
   Future<void> _onRemoveFavorite(
     RemoveFavorite event,
     Emitter<FavoritesState> emit,
   ) async {
-    final currentFavorites = await _favoriteStorageService.getFavorites();
-    final newFavorites = currentFavorites
-        .where((id) => id != event.movieId)
-        .toList();
-    await _favoriteStorageService.saveFavorites(newFavorites);
-    add(LoadFavorites());
+    if (state is FavoritesLoaded) {
+      final oldState = state as FavoritesLoaded;
+      final newFavorites = oldState.favoriteMovieIds
+          .where((id) => id != event.movieId)
+          .toList();
+      await _favoriteStorageService.saveFavorites(newFavorites);
+      final newMovies = oldState.movies
+          .where((movie) => movie.id != event.movieId)
+          .toList();
+      emit(FavoritesLoaded(movies: newMovies, favoriteMovieIds: newFavorites));
+    }
   }
 }

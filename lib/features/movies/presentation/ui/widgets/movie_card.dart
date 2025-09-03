@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_browser/features/app/screen_names.dart';
 import 'package:movie_browser/features/movies/data/repository/models/movie_entity.dart';
+import 'package:movie_browser/features/movies/presentation/ui/widgets/favorite_button.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({required this.movie, super.key});
@@ -51,13 +52,22 @@ class MovieCard extends StatelessWidget {
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  movie.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                Row(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        movie.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    FavoriteButton(movieId: movie.id),
+                  ],
                 ),
                 Text(
                   movie.overview,
