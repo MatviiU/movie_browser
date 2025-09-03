@@ -12,7 +12,7 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.goNamed(
+      onTap: () => context.pushNamed(
         ScreenNames.movieDetails,
         pathParameters: {'id': movie.id.toString()},
       ),
